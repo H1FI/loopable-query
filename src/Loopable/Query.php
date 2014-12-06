@@ -1,14 +1,12 @@
 <?php
 
-class Loopable_Query implements Countable, Iterator {
+class Loopable_Query extends WP_Query implements Countable, Iterator {
 
 	/**
-	 * @var WP_Query
+	 * @param array|WP_Query $query The WP_Query or an array of args for WP_Query.
 	 */
-	protected $_query;
-
-	public function __construct( WP_Query $query = null ) {
-		$this->_query = $query ? $query : $GLOBALS['wp_query'];
+	public function __construct( $args ) {
+		parent::__construct( $args );
 	}
 
 	/**
@@ -21,7 +19,7 @@ class Loopable_Query implements Countable, Iterator {
 	 *       The return value is cast to an integer.
 	 */
 	public function count() {
-		return (int) $this->_query->post_count;
+		return (int) $this->post_count;
 	}
 
 	/**
@@ -31,7 +29,7 @@ class Loopable_Query implements Countable, Iterator {
 	 * @return mixed Can return any type.
 	 */
 	public function current() {
-		return $this->_query->post;
+		return $this->post;
 	}
 
 	/**
@@ -41,8 +39,8 @@ class Loopable_Query implements Countable, Iterator {
 	 * @return void Any returned value is ignored.
 	 */
 	public function next() {
-		if ( $this->_query->current_post + 1 < $this->_query->post_count ) {
-			$this->_query->the_post();
+		if ( $this->current_post + 1 < $this->post_count ) {
+			$this->the_post();
 		}
 	}
 
@@ -53,7 +51,7 @@ class Loopable_Query implements Countable, Iterator {
 	 * @return mixed scalar on success, or null on failure.
 	 */
 	public function key() {
-		return $this->_query->current_post;
+		return $this->current_post;
 	}
 
 	/**
@@ -64,13 +62,13 @@ class Loopable_Query implements Countable, Iterator {
 	 *       Returns true on success or false on failure.
 	 */
 	public function valid() {
-		if ( $this->_query->have_posts() ) {
-			if ( ! $this->_query->in_the_loop ) {
-				$this->_query->the_post();
+		if ( $this->have_posts() ) {
+			if ( ! $this->in_the_loop ) {
+				$this->the_post();
 			}
 			return true;
 		}
-		$this->_query->rewind_posts();
+		$this->rewind_posts();
 		wp_reset_postdata();
 		return false;
 	}
@@ -83,9 +81,8 @@ class Loopable_Query implements Countable, Iterator {
 	 */
 	public function rewind() {
 		wp_reset_postdata();
-		$this->_query->rewind_posts();
-		$this->_query->in_the_loop = false;
+		$this->rewind_posts();
+		$this->in_the_loop = false;
 	}
 
 }
-

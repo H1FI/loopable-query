@@ -3,6 +3,11 @@
 class Loopable_Query extends WP_Query implements Countable, Iterator {
 
 	/**
+	 * Have posts even if still at the last one.
+	 */
+	protected $do_have_posts = true;
+
+	/**
 	 * @param array|WP_Query $query The WP_Query or an array of args for WP_Query.
 	 */
 	public function __construct( $args ) {
@@ -41,6 +46,8 @@ class Loopable_Query extends WP_Query implements Countable, Iterator {
 	public function next() {
 		if ( $this->current_post + 1 < $this->post_count ) {
 			$this->the_post();
+		} else {
+			$this->do_have_posts = false;
 		}
 	}
 
@@ -62,7 +69,7 @@ class Loopable_Query extends WP_Query implements Countable, Iterator {
 	 *       Returns true on success or false on failure.
 	 */
 	public function valid() {
-		if ( $this->have_posts() ) {
+		if ( $this->do_have_posts ) {
 			if ( ! $this->in_the_loop ) {
 				$this->the_post();
 			}

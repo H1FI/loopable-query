@@ -1,11 +1,15 @@
 {
-	"name": "johnpbloch/loopable-query",
+	"name": "h1/loopable-query",
 	"description": "A loopable object for all your WP_Query needs",
 	"license": "GPL-2.0+",
 	"authors": [
 		{
 			"name": "John P. Bloch",
 			"email": "john.bloch@10up.com"
+		},
+		{
+			"name": "Aki Björklund",
+			"email": "aki@h1.fi"
 		}
 	],
 	"minimum-stability": "dev",
